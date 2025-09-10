@@ -3,6 +3,7 @@ package com.bignerdranch.android.geoquiz
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.collection.MutableIntList
@@ -119,10 +120,10 @@ class MainActivity : AppCompatActivity() {
     private fun displayGradeIfComplete() {
         if (answeredList.size == questionBank.size) {
             val percentGrade = (points.toDouble() / questionBank.size.toDouble()) * 100
-            Snackbar.make(
-                findViewById(R.id.question_text_view),
+            Toast.makeText(
+                this,
                 "$percentGrade%",
-                Snackbar.LENGTH_SHORT
+                Toast.LENGTH_SHORT
             ).show()
         }
     }
