@@ -11,6 +11,8 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import com.google.android.material.snackbar.Snackbar
 import com.bignerdranch.android.geoquiz.databinding.ActivityMainBinding
+import kotlin.math.roundToInt
+
 private const val TAG = "MainActivity"
 class MainActivity : AppCompatActivity() {
 
@@ -119,7 +121,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun displayGradeIfComplete() {
         if (answeredList.size == questionBank.size) {
-            val percentGrade = (points.toDouble() / questionBank.size.toDouble()) * 100
+            val percentGrade = (points.toDouble() / questionBank.size.toDouble() * 100).roundToInt()
             Toast.makeText(
                 this,
                 "$percentGrade%",
