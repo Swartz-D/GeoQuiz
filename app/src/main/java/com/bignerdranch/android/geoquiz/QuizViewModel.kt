@@ -1,11 +1,6 @@
 package com.bignerdranch.android.geoquiz
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
-import kotlin.rem
-
-private const val TAG = "QuizViewModel"
-
 class QuizViewModel : ViewModel() {
     val questionBank = listOf(
         Question(R.string.question_australia, true),
