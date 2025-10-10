@@ -5,6 +5,7 @@ import android.util.Log
 import android.view.View
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.collection.MutableIntList
 import androidx.core.view.ViewCompat
@@ -17,15 +18,8 @@ private const val TAG = "MainActivity"
 class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
-    private val questionBank = listOf(
-        Question(R.string.question_australia, true),
-        Question(R.string.question_oceans, true),
-        Question(R.string.question_mideast, false),
-        Question(R.string.question_africa, false),
-        Question(R.string.question_americas, true),
-        Question(R.string.question_asia, true)
-    )
-    private var currentIndex = 0
+    private val quizViewModel: QuizViewModel by viewModels()
+
     private var points = 0
     private var answeredList = MutableIntList()
 
@@ -35,6 +29,7 @@ class MainActivity : AppCompatActivity() {
         enableEdgeToEdge()
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        Log.d(TAG, "Got a QuizViewModel: $quizViewModel")
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
@@ -50,11 +45,11 @@ class MainActivity : AppCompatActivity() {
             displayGradeIfComplete()
         }
         binding.nextButton.setOnClickListener {
-            currentIndex = (currentIndex + 1) % questionBank.size
+            quizViewModel.moveToNext()
             updateQuestion()
         }
         binding.previousButton.setOnClickListener {
-            currentIndex = (currentIndex - 1 + questionBank.size) % questionBank.size
+            quizViewModel.moveToLast()
             updateQuestion()
         }
         updateQuestion()
@@ -85,10 +80,10 @@ class MainActivity : AppCompatActivity() {
         Log.d(TAG, "onDestroy() called")
     }
     private fun updateQuestion() {
-        val questionTextResId = questionBank[currentIndex].textResId
+        val questionTextResId = quizViewModel.currentQuestionText
         binding.questionTextView.setText(questionTextResId)
 
-        if (currentIndex in answeredList) {
+        if (quizViewModel.currentIndex in answeredList) {
             toggleAnswerButtons(false)
         } else {
             toggleAnswerButtons(true)
@@ -97,8 +92,8 @@ class MainActivity : AppCompatActivity() {
     }
     private fun checkAnswer(userAnswer: Boolean, v: View) {
         toggleAnswerButtons(false)
-        answeredList.add(currentIndex)
-        val correctAnswer = questionBank[currentIndex].answer
+        answeredList.add(quizViewModel.currentIndex)
+        val correctAnswer = quizViewModel.currentQuestionAnswer
         var messageResId: Int
 
         if (userAnswer == correctAnswer) {
@@ -120,8 +115,8 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun displayGradeIfComplete() {
-        if (answeredList.size == questionBank.size) {
-            val percentGrade = (points.toDouble() / questionBank.size.toDouble() * 100).roundToInt()
+        if (answeredList.size == quizViewModel.questionBank.size) {
+            val percentGrade = (points.toDouble() / quizViewModel.questionBank.size.toDouble() * 100).roundToInt()
             Toast.makeText(
                 this,
                 "$percentGrade%",
