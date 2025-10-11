@@ -1,7 +1,10 @@
 package com.bignerdranch.android.geoquiz
 
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
-class QuizViewModel : ViewModel() {
+
+const val CURRENT_INDEX_KEY = "CURRENT_INDEX_KEY"
+class QuizViewModel(private val savedStateHandle: SavedStateHandle) : ViewModel() {
     val questionBank = listOf(
         Question(R.string.question_australia, true),
         Question(R.string.question_oceans, true),
@@ -10,7 +13,9 @@ class QuizViewModel : ViewModel() {
         Question(R.string.question_americas, true),
         Question(R.string.question_asia, true)
     )
-    var currentIndex = 0
+    var currentIndex: Int
+        get() = savedStateHandle[CURRENT_INDEX_KEY] ?: 0
+        set(value) = savedStateHandle.set(CURRENT_INDEX_KEY, value)
     val currentQuestionAnswer: Boolean
         get() = questionBank[currentIndex].answer
     val currentQuestionText: Int
