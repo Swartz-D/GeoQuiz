@@ -2,7 +2,6 @@ package com.bignerdranch.android.geoquiz
 
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
-
 const val CURRENT_INDEX_KEY = "CURRENT_INDEX_KEY"
 class QuizViewModel(private val savedStateHandle: SavedStateHandle) : ViewModel() {
     val questionBank = listOf(
